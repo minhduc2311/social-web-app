@@ -3,8 +3,8 @@ export const userQuery = (userId) => {
   return query;
 };
 
-export const searchQuery = (SearchTerm) => {
-  const query = `*[type == "pin" & title match '${SearchTerm}*' || category match '${SearchTerm}*' || about match '${SearchTerm}*']{
+export const searchQuery = (searchTerm) => {
+  const query = `*[_type == "pin" && title match '${searchTerm}*' || category match '${searchTerm}*' || about match '${searchTerm}*']{
         image{
             asset -> {
                 url
@@ -25,7 +25,7 @@ export const searchQuery = (SearchTerm) => {
                 image
             }
         }
-    }`;
+    }`
 
   return query;
 };
@@ -55,24 +55,14 @@ export const feedQuery = `*[_type == "pin"] | order(_createdAt desc) {
 
 export const categories = [
   {
-    name: "cars",
+    name: "vehicles",
     image:
       "https://i.pinimg.com/750x/eb/47/44/eb4744eaa3b3ccd89749fa3470e2b0de.jpg",
-  },
-  {
-    name: "fitness",
-    image:
-      "https://i.pinimg.com/236x/25/14/29/251429345940a47490cc3d47dfe0a8eb.jpg",
   },
   {
     name: "wallpaper",
     image:
       "https://i.pinimg.com/236x/03/48/b6/0348b65919fcbe1e4f559dc4feb0ee13.jpg",
-  },
-  {
-    name: "websites",
-    image:
-      "https://i.pinimg.com/750x/66/b1/29/66b1296d36598122e6a4c5452b5a7149.jpg",
   },
   {
     name: "photo",
@@ -105,12 +95,7 @@ export const categories = [
       "https://i.pinimg.com/236x/46/7c/17/467c17277badb00b638f8ec4da89a358.jpg",
   },
   {
-    name: "cats",
-    image:
-      "https://i.pinimg.com/236x/6c/3c/52/6c3c529e8dadc7cffc4fddedd4caabe1.jpg",
-  },
-  {
-    name: "dogs",
+    name: "animals",
     image:
       "https://i.pinimg.com/236x/1b/c8/30/1bc83077e363db1a394bf6a64b071e9f.jpg",
   },
@@ -174,6 +159,56 @@ export const pinDetailMorePinQuery = (pin) => {
     },
     save[]{
       _key,
+      postedBy->{
+        _id,
+        userName,
+        image
+      },
+    },
+  }`;
+  return query;
+};
+
+export const userCreatedPinsQuery = (userId) => {
+  const query = `*[ _type == 'pin' && userId == '${userId}'] | order(_createdAt desc){
+    image{
+      asset->{
+        url
+      }
+    },
+    _id,
+    destination,
+    postedBy->{
+      _id,
+      userName,
+      image
+    },
+    save[]{
+      postedBy->{
+        _id,
+        userName,
+        image
+      },
+    },
+  }`;
+  return query;
+};
+
+export const userSavedPinsQuery = (userId) => {
+  const query = `*[_type == 'pin' && '${userId}' in save[].userId ] | order(_createdAt desc) {
+    image{
+      asset->{
+        url
+      }
+    },
+    _id,
+    destination,
+    postedBy->{
+      _id,
+      userName,
+      image
+    },
+    save[]{
       postedBy->{
         _id,
         userName,

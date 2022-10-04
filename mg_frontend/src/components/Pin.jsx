@@ -16,7 +16,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
 
   // console.log(user);
 
-  const alreadySaved = !!save?.filter((item) => item.postedBy?._id === user.sub)
+  const alreadySaved = !!save?.filter((item) => item.postedBy?._id === user?.sub)
     ?.length; //!! true/false
 
   const savePin = (id) => {
@@ -27,10 +27,10 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
         .insert("after", "save[-1]", [
           {
             _key: uuidv4(),
-            userId: user.sub,
+            userId: user?.sub,
             postedBy: {
               _type: "postedBy",
-              _ref: user.sub,
+              _ref: user?.sub,
             },
           },
         ])
@@ -112,7 +112,7 @@ const Pin = ({ pin: { postedBy, image, _id, destination, save } }) => {
                 >
                   <BsFillArrowUpRightCircleFill />
                   {destination.length > 20
-                    ? destination.slice(8, 20)
+                    ? `${destination.slice(8, 20)}...`
                     : destination.slice(8)}
                 </a>
               )}
